@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <custom-table
+      data='[["Name", "Age", "Email"], ["Alice", 25, "alice@example.com"], ["Bob", 30, "bob@example.com"]]'
+    ></custom-table>
+
+    <script>
+        // 定义一个名为 'custom-table' 的新元素
+        class CustomTable extends HTMLElement {
+          constructor() {
+            super(); // 调用父类构造函数
+  
+            // 创建 shadow DOM
+            const shadow = this.attachShadow({ mode: "open" });
+  
+            // 创建表格元素并添加到 shadow DOM 中
+            const table = document.createElement("table");
+            shadow.appendChild(table);
+  
+            // 设置样式
+            const style = document.createElement("style");
+            style.textContent = `
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+      `;
+            shadow.appendChild(style);
+
+
+            const value = JSON.parse(this.getAttribute("data"));
+            if (!Array.isArray(value)) {
+              throw new Error("Data must be an array");
+            }
+  
+            // 获取 shadow DOM 中的表格元素
+  
+            // 添加表头
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+            value[0]?.forEach((header) => {
+              const th = document.createElement("th");
+              th.textContent = header;
+              headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+  
+            // 添加表身
+            const tbody = document.createElement("tbody");
+            value.slice(1).forEach((row) => {
+              const tr = document.createElement("tr");
+              row.forEach((cell) => {
+                const td = document.createElement("td");
+                td.textContent = cell;
+                tr.appendChild(td);
+              });
+              tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            JSON.parse(value).forEach((row) => {
+                console.log('%c [ row ]-43', 'font-size:13px; background:pink; color:#bf2c9f;', row)
+            })
+          }
+  
+        }
+  
+        // 定义该元素
+        window.customElements.define("custom-table", CustomTable);
+      </script>
+  </body>
+</html>

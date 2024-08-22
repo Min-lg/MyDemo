@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .container {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        float: left;
+        border: 1px solid #000;
+        text-align: center;
+        line-height: 100px;
+        font-size: 24px;
+      }
+      #draggable {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        position: absolute;
+        cursor: pointer;
+        line-height: 50px;
+        text-align: center;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container1" class="container">1</div>
+    <div id="container2" class="container">2</div>
+    <div id="draggable">Drag</div>
+
+    <script>
+      var dragged = false;
+      var startX,
+        startY,
+        offsetX,
+        offsetY,
+        initialContainer = null;
+
+      var draggable = document.getElementById("draggable");
+      draggable.addEventListener("touchstart", function (e) {
+        console.log('%c [ e ]-43', 'font-size:13px; background:pink; color:#bf2c9f;', e)
+        dragged = false;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        initialContainer = e.target.parentNode;
+        offsetX = startX - e.target.offsetLeft;
+        offsetY = startY - e.target.offsetTop;
+      });
+
+      draggable.addEventListener("touchmove", function (e) {
+        if (!dragged) {
+          dragged = true;
+          document.body.appendChild(e.target);
+          e.target.style.position = "absolute";
+        }
+        var x = e.touches[0].clientX - offsetX;
+        var y = e.touches[0].clientY - offsetY;
+        e.target.style.left = x + "px";
+        e.target.style.top = y + "px";
+      });
+
+      draggable.addEventListener("touchend", function (e) {
+        if (dragged) {
+          var currentContainer = e.target.parentNode;
+          console.log('%c [ currentContainer ]-66', 'font-size:13px; background:pink; color:#bf2c9f;', currentContainer)
+          console.log('%c [ initialContainer ]-68', 'font-size:13px; background:pink; color:#bf2c9f;', initialContainer)
+          if (currentContainer !== initialContainer) {
+            // 元素从一个容器拖拽到了另一个容器
+            console.log(
+              "Dragged from",
+              initialContainer.id,
+              "to",
+              currentContainer.id
+            );
+          }
+        }
+        e.target.style.position = "";
+      });
+    </script>
+  </body>
+</html>
